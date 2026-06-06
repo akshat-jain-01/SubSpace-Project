@@ -5,10 +5,7 @@ import { Company } from "../../types/company";
 export class ApolloService {
   private readonly apiKey = config.apolloApiKey;
 
-  private getEmployeeRange(
-    employeeCount: number
-  ): string {
-
+  private getEmployeeRange(employeeCount: number): string {
     if (employeeCount <= 10) return "1,10";
     if (employeeCount <= 50) return "11,50";
     if (employeeCount <= 200) return "51,200";
@@ -20,10 +17,7 @@ export class ApolloService {
     return "50001,1000000";
   }
 
-  async enrichCompany(
-    domain: string
-  ): Promise<Company> {
-
+  async enrichCompany(domain: string): Promise<Company> {
     const response = await axios.post(
       "https://api.apollo.io/api/v1/organizations/enrich",
       { domain },
@@ -32,7 +26,7 @@ export class ApolloService {
           "Content-Type": "application/json",
           "x-api-key": this.apiKey,
         },
-      }
+      },
     );
 
     const org = response.data.organization;
@@ -46,20 +40,18 @@ export class ApolloService {
     };
   }
 
-  async findSimilarCompanies(
-    company: Company
-  ): Promise<Company[]> {
+  async findSimilarCompanies(company: Company): Promise<Company[]> {
+    const keywords = [...new Set(company.keywords ?? [])]
+      .filter((keyword) => keyword && keyword.trim().length > 0)
+      .slice(0, 100); // Apollo limit se safe
 
     const response = await axios.post(
       "https://api.apollo.io/api/v1/organizations/search",
       {
-        q_organization_keyword_tags:
-          company.keywords,
+        q_organization_keyword_tags: keywords,
 
         organization_num_employees_ranges: [
-          this.getEmployeeRange(
-            company.employeeCount
-          ),
+          this.getEmployeeRange(company.employeeCount),
         ],
 
         per_page: 20,
@@ -69,24 +61,18 @@ export class ApolloService {
           "Content-Type": "application/json",
           "x-api-key": this.apiKey,
         },
-      }
+      },
     );
 
-    const organizations =
-      response.data.organizations ?? [];
+    const organizations = response.data.organizations ?? [];
 
     return organizations
       .map((org: any) => ({
         name: org.name,
         domain: org.primary_domain,
         industry: org.industry,
-        employeeCount:
-          org.estimated_num_employees,
+        employeeCount: org.estimated_num_employees,
       }))
-      .filter(
-        (org: Company) =>
-          org.domain &&
-          org.domain !== company.domain
-      );
+      .filter((org: Company) => org.domain && org.domain !== company.domain);
   }
 }
