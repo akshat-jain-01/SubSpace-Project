@@ -5,9 +5,13 @@
 - Prospect discovery using Prospeo
 - Modular service architecture
 - Error handling for external APIs
+- Eazyreach email enrichment
 
 ## Pending
 
-- Eazyreach email enrichment
 - Brevo email automation
 - Safety confirmation step
+
+## Note
+
+Email enrichment requires an active EazyReach wallet balance.

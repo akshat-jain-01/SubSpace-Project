@@ -7,8 +7,4 @@ export interface Person {
   seniority?: string;
 
   email?: string;
-  emailStatus?: string;
-
-  companyDomain?: string;
-  employeeCount?: number;
 }
