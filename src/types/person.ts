@@ -7,4 +7,5 @@ export interface Person {
   seniority?: string;
 
   email?: string;
+  emailStatus?: string;
 }

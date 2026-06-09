@@ -7,4 +7,7 @@ export const config = {
   prospeoApiKey: process.env.PROSPEO_API_KEY!,
   eazyreachClientId: process.env.EAZYREACH_CLIENT_ID!,
   eazyreachClientSecret: process.env.EAZYREACH_CLIENT_SECRET!,
+  brevoApiKey: process.env.BREVO_API_KEY!,
+  senderName: process.env.SENDER_NAME!,
+  senderEmail: process.env.SENDER_EMAIL!,
 };
